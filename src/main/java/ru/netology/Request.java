@@ -26,7 +26,7 @@ public class Request {
         return path;
     }
 
-    public String getQueryParam(String name)  {
+    public String getQueryParam(String name) {
         return queryParams.stream()
                 .filter(x -> x.getName().equals(name))
                 .findFirst()
