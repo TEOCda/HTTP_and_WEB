@@ -1,36 +1,47 @@
 package ru.netology;
-import org.apache.commons.collections.MultiMap;
-import org.apache.commons.collections.map.MultiValueMap;
+
 import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.client.utils.URIBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
 public class Request {
-    public static MultiMap getQueryParams(String url) {
-        MultiMap parameter = new MultiValueMap();
-        List<NameValuePair> params;
-        try {
-            params = URLEncodedUtils.parse(new URI(url), "UTF-8");
-            for (NameValuePair param : params) {
-                if (param.getName() != null && param.getValue() != null)
-                    parameter.put(param.getName(), param.getValue());
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return parameter;
+    private final String method;
+    private final String path;
+    private final List<NameValuePair> queryParams;
+
+    public Request(String method, String path) throws URISyntaxException {
+        this.method = method;
+        this.path = path;
+        this.queryParams = parseQueryParams();
     }
 
-    public static String getQueryParamsPath(String url) {
-        String result;
-        int i = url.indexOf("?");
-        if (i == -1) {
-            return url;
-        }
-        result = url.substring(0, i);
-        return result;
+    public String getMethod() {
+        return method;
     }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getQueryParam(String name)  {
+        return queryParams.stream()
+                .filter(x -> x.getName().equals(name))
+                .findFirst()
+                .map(NameValuePair::getValue)
+                .orElse(null);
+    }
+
+    public List<NameValuePair> getQueryParams() {
+        return queryParams;
+    }
+
+    private List<NameValuePair> parseQueryParams() throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(new URI(path));
+        return uriBuilder.getQueryParams();
+    }
+
+
 }

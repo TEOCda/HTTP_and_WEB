@@ -46,8 +46,8 @@ public class Server {
 
             final var pathAndQuery = parts[1];
             System.out.println("Параметры");
-            var parsResultParams = Request.getQueryParams(pathAndQuery);
-            var path = Request.getQueryParamsPath(pathAndQuery);
+            var parsResultParams = Request.getQueryParam(pathAndQuery);
+            var path = Request.getPath(pathAndQuery);
             System.out.println(parsResultParams);
             System.out.println(path);
             if (!validPaths.contains(path)) {
